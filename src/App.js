@@ -1,23 +1,18 @@
-import logo from './logo.svg';
-import './App.css';
+import { Redirect, Route, Switch } from 'react-router'
+import Navbar from './components/UI/Navbar/Navbar'
+import Glossary from './pages/glossary'
+import Train from './pages/train';
+
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Navbar />
+      <Switch>
+        <Route path="/train" exact component={Train} />
+        <Route path="/" exact component={Glossary} />
+        <Redirect from="/" to="/glossary" />
+      </Switch>
     </div>
   );
 }
