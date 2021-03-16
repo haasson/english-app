@@ -3,7 +3,7 @@ import {useDispatch} from "react-redux";
 import {setSearch} from "../../../../store/glossary/actions";
 import {useInput} from "../../../../hooks/app/useInput";
 
-export const Input = ({placeholder, name, disabled, cleanup}) => {
+export const Input = ({placeholder, name, disabled, cleanup, className}) => {
     const dispatch = useDispatch()
 
     const {value, onChange, clear} = useInput('')
@@ -21,7 +21,7 @@ export const Input = ({placeholder, name, disabled, cleanup}) => {
     return (
         <input
             type="text"
-            className="form-control"
+            className={`${className} form-control`}
             name={name} placeholder={placeholder}
             value={value}
             onChange={onChange}

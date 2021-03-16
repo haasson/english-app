@@ -7,6 +7,7 @@ import {TrainResultSlide} from "../TrainResultSlide/TrainResultSlide";
 import {ProgressBar} from "../../UI/ProgressBar/ProgressBar";
 import {ConstructSlide} from "../ConstructSlide/ConstructSlide";
 import {useParams} from "react-router";
+import {WritingSlide} from "../WritingSlide/WritingSlide";
 
 export const TrainManager = () => {
   const {mode} = useParams()
@@ -32,6 +33,7 @@ export const TrainManager = () => {
   }
 
   const saveAnswer = (isCorrect) => {
+    console.log(isCorrect)
     const currentWord = words[current]
     if (isCorrect) {
       setCorrectList(prev => [...prev, currentWord])
@@ -51,12 +53,19 @@ export const TrainManager = () => {
   }
 
   const Slide = () => {
+    const options = {
+      word: words[current],
+      mode,
+      clickNext: saveAnswer
+    }
     if (words.length) {
-      console.log(mode)
       if (mode === "construct") {
-        return <ConstructSlide word={words[current]} mode={mode} clickNext={saveAnswer}/>
+        return <ConstructSlide {...options} />
       }
-      return <TranslateSlide word={words[current]} mode={mode} clickNext={saveAnswer}/>
+      if (mode === "writing") {
+        return <WritingSlide {...options} />
+      }
+      return <TranslateSlide {...options} />
     } else {
       return <div>Loading...</div>
     }

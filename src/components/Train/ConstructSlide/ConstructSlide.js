@@ -3,14 +3,14 @@ import {Button} from "../../UI/Button/Button";
 import {ConstructWord} from "../ConstructWord/ConstructWord";
 import {ConstructLetters} from "../ConstructLetters/ConstructLetters";
 
-export const ConstructSlide = ({word, mode, clickNext}) => {
+export const ConstructSlide = ({word, clickNext}) => {
   const createLetters = () => word.eng.toLowerCase().split('').map((letter, i) => (
     {id:i, symbol: letter, isOpen: false})
   )
 
   const [letters, setLetters] = useState(createLetters());
   const [currentIdx, setCurrentIdx] = useState(0);
-  const [hasMistakes, setHasMistakes] = useState(true);
+  const [isCorrect, setIsCorrect] = useState(true);
 
   const checkLetter = (id) => {
     let letter = letters.find(letter => letter.id === id)
@@ -21,7 +21,7 @@ export const ConstructSlide = ({word, mode, clickNext}) => {
       updatedLetters[currentIdx].isOpen = true
     } else {
       updatedLetters[id].isMistake = true
-      setHasMistakes(false)
+      setIsCorrect(false)
     }
     setLetters(updatedLetters)
   }
@@ -40,7 +40,7 @@ export const ConstructSlide = ({word, mode, clickNext}) => {
             <div className="d-flex justify-content-center mb-4">
               <ConstructLetters letters={letters} clicked={checkLetter} />
             </div>
-            {currentIdx === letters.length && <Button clicked={() => clickNext(hasMistakes)}>Next</Button>}
+            {currentIdx === letters.length && <Button clicked={() => clickNext(isCorrect)}>Next</Button>}
           </div>
         </div>
       </div>
