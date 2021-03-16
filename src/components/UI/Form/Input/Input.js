@@ -1,24 +1,22 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect} from 'react';
 import {useDispatch} from "react-redux";
-import {setFilter} from "../../../../store/glossary/actions";
+import {setSearch} from "../../../../store/glossary/actions";
+import {useInput} from "../../../../hooks/app/useInput";
 
-export const Input = ({placeholder, name, disabled, cleanup, change}) => {
-    const [value, setValue] = useState('');
+export const Input = ({placeholder, name, disabled, cleanup}) => {
     const dispatch = useDispatch()
 
+    const {value, onChange, clear} = useInput('')
+
     useEffect(() => {
-        setValue('')
+        clear()
     }, [cleanup])
 
     useEffect(() => {
         if (name === "search") {
-            dispatch(setFilter(value))
+            dispatch(setSearch(value))
         }
     }, [dispatch, name, value])
-
-    const changeInput = (e) => {
-        setValue(e.target.value)
-    }
 
     return (
         <input
@@ -26,7 +24,7 @@ export const Input = ({placeholder, name, disabled, cleanup, change}) => {
             className="form-control"
             name={name} placeholder={placeholder}
             value={value}
-            onChange={changeInput}
+            onChange={onChange}
             disabled={disabled}
         />
     );

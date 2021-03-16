@@ -16,8 +16,8 @@ export const GlossaryAddForm = ({}) => {
 
     const submitForm = (e) => {
         e.preventDefault()
-        let rusText = e.target.elements.rus.value
-        let engText = e.target.elements.eng.value
+        let rusText = e.target.elements.rus.value.trim()
+        let engText = e.target.elements.eng.value.trim()
 
         if (rusText && engText) {
             dispatch(sendNewTranslation({
@@ -25,8 +25,12 @@ export const GlossaryAddForm = ({}) => {
                 engWords: engText.split(" ").length,
                 rus: rusText,
                 rusWords: rusText.split(" ").length,
+                created: Date.now(),
                 progress: 0,
-                created: Date.now()}))
+                maxProgress: 0,
+                todayProgress: 0,
+                wasCompleted: false
+            }))
         }
     }
     return (

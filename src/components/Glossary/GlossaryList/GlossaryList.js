@@ -3,9 +3,9 @@ import {GlossaryLine} from "../GlossaryLine/GlossaryLine";
 
 export const GlossaryList = ({list}) => {
     return (
-        <ul className="list-group list-group-flush">
-            {list.map(({id, eng, rus, created}) => {
-                return <GlossaryLine key={id} id={id} eng={eng} rus={rus} />
+        <ul className="list-group list-group-flush mt-3">
+            {list.map(word => {
+                return <GlossaryLine key={word.id} word={word} />
             })}
         </ul>
     );

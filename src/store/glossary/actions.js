@@ -4,12 +4,6 @@ export const fetchGlossary = () => {
   return async dispatch => {
     try {
       let glossary = (await firebase.database().ref("glossary").once("value")).val() || {}
-      glossary = Object.keys(glossary).map(key => ({
-        id: key,
-        eng: glossary[key].eng,
-        rus: glossary[key].rus,
-        progress: glossary[key].progress
-      }))
       dispatch(fetchGlossarySuccess(glossary))
     } catch (e) {
       debugger
@@ -24,7 +18,7 @@ export const sendNewTranslation = (translation) => {
     try {
       dispatch(startAddingTranslation())
       let newTranslation = await firebase.database().ref("glossary").push(translation)
-      dispatch(addNewTranslationSuccess({...translation, id: newTranslation.key}))
+      dispatch(addNewTranslationSuccess({id: newTranslation.key, ...translation}))
     } catch (e) {
       console.error('Ошибка', e)
       // dispatch(fetchContractError(e))
@@ -37,6 +31,22 @@ export const removeTranslation = (key) => {
     try {
       await firebase.database().ref("glossary").child(key).remove()
       dispatch(removeTranslationSuccess(key))
+    } catch (e) {
+      console.error('Ошибка', e)
+      // dispatch(fetchContractError(e))
+    }
+  }
+}
+
+export const updateProgress = (words) => {
+  return async dispatch => {
+    try {
+      const updates = {}
+      words.forEach(word => {
+        updates[`glossary/${word.id}/progress`] = word.progress
+      })
+      await firebase.database().ref().update(updates)
+      dispatch(updateTranslationProgress(words))
     } catch (e) {
       console.error('Ошибка', e)
       // dispatch(fetchContractError(e))
@@ -58,6 +68,12 @@ const addNewTranslationSuccess = (translation) => {
 const removeTranslationSuccess = (id) => {
   return { type: "REMOVE_TRANSLATION_SUCCESS", id }
 }
-export const setFilter = (str) => {
-  return { type: "SET_FILTER", str }
+export const setSearch = (str) => {
+  return { type: "SET_SEARCH", str }
+}
+export const setFilter = (filter) => {
+  return { type: "SET_FILTER", filter }
+}
+export const updateTranslationProgress = (list) => {
+  return { type: "UPDATE_PROGRESS", list }
 }
