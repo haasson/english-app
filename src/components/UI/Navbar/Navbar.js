@@ -1,7 +1,31 @@
-import React from 'react'
+import React, {useContext} from 'react'
 import { NavLink } from 'react-router-dom'
+import {useAuthentication} from "../../../hooks/app/useAuthentication";
+import {AuthContext} from "../../../index";
 
 const Navbar = () => {
+  const auth = useContext(AuthContext)
+  const [user] = useAuthentication()
+
+
+  const userButtons = (
+    <>
+      <li className="nav-item">
+        <NavLink className="nav-link" aria-current="page" to="/" exact>Glossary</NavLink>
+      </li>
+      <li className="nav-item">
+        <NavLink className="nav-link" to="/train">Train</NavLink>
+      </li>
+      <li className="nav-item">
+        <span className="nav-link">{user.displayName}</span>
+      </li>
+
+      <li className="nav-item">
+        <span className="nav-link" onClick={() => auth.signOut()}>Logout</span>
+      </li>
+    </>
+  )
+
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
       <div className="container-fluid">
@@ -11,12 +35,7 @@ const Navbar = () => {
         </button>
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-            <li className="nav-item">
-              <NavLink className="nav-link" aria-current="page" to="/" exact>Glossary</NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink className="nav-link" to="/train">Train</NavLink>
-            </li>
+            {user && userButtons}
           </ul>
         </div>
       </div>

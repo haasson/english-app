@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {createContext} from 'react';
 import ReactDOM from 'react-dom';
 import { applyMiddleware, compose, createStore } from 'redux'
 import { Provider } from 'react-redux'
@@ -7,8 +7,11 @@ import rootReducer from './store/rootReducer'
 import thunk from 'redux-thunk'
 import firebase from 'firebase'
 import './index.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'firebase/auth'
 import App from './App';
 import { BrowserRouter } from 'react-router-dom';
+import {appConfig} from "./appConfig";
 
 const composeEnhancers =
   typeof window === 'object' &&
@@ -24,24 +27,19 @@ const store = createStore(
   )
 )
 
-const firebaseConfig = {
-  apiKey: "AIzaSyAzEmGYG1x_6BGgkdYJgj6lAM_n-lToXGE",
-  authDomain: "vue-english-project.firebaseapp.com",
-  databaseURL: "https://vue-english-project.firebaseio.com",
-  projectId: "vue-english-project",
-  storageBucket: "vue-english-project.appspot.com",
-  messagingSenderId: "314146019463",
-  appId: "1:314146019463:web:52dd56edd053ac95134022"
-};
+firebase.initializeApp(appConfig.firebaseConfig)
 
-firebase.initializeApp(firebaseConfig)
+export const AuthContext = createContext(null)
+const auth = firebase.auth()
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
+      <AuthContext.Provider value={auth}>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </AuthContext.Provider>
     </Provider>
   </React.StrictMode>,
   document.getElementById('root')

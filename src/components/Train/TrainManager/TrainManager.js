@@ -6,11 +6,14 @@ import {TranslateSlide} from "../TranslateSlide/TranslateSlide";
 import {TrainResultSlide} from "../TrainResultSlide/TrainResultSlide";
 import {ProgressBar} from "../../UI/ProgressBar/ProgressBar";
 import {ConstructSlide} from "../ConstructSlide/ConstructSlide";
-import {useParams} from "react-router";
+import {useHistory, useLocation, useParams} from "react-router";
 import {WritingSlide} from "../WritingSlide/WritingSlide";
 
 export const TrainManager = () => {
   const {mode} = useParams()
+  const search = useLocation().search;
+  const wordsSet = new URLSearchParams(search).get('wordsSet');
+
   const dispatch = useDispatch()
   const [current, setCurrent] = useState(0)
   const [isFinished, setIsFinished] = useState();
@@ -19,7 +22,7 @@ export const TrainManager = () => {
   const [wrongList, setWrongList] = useState([]);
   const answersList = useRef([]);
 
-  const words = useTrainList(mode)
+  const words = useTrainList(mode, {wordsSet})
 
   useEffect(() => {
     return () => {
@@ -28,12 +31,27 @@ export const TrainManager = () => {
   }, [])
 
   const saveProgress = () => {
-    const list = answersList.current.map(el => ({id: el.id, progress: el.progress + 5}))
+    const list = answersList.current.map(el => {
+      let lastTrains = el.lastTrains ? [...el.lastTrains] : []
+
+      lastTrains.push(true)
+      if (lastTrains.length > 5) {
+        lastTrains.unshift()
+      }
+
+      const progressPoints = lastTrains.reduce((memo, value, i) => {
+        return value ? i + 1 : 0
+      }, 0)
+      return {
+        id: el.id,
+        progress: el.progress + progressPoints,
+        lastTrains
+      }
+    })
     dispatch(updateProgress(list))
   }
 
   const saveAnswer = (isCorrect) => {
-    console.log(isCorrect)
     const currentWord = words[current]
     if (isCorrect) {
       setCorrectList(prev => [...prev, currentWord])
@@ -73,10 +91,10 @@ export const TrainManager = () => {
 
   return (
     <div className="container mt-3">
-      <ProgressBar current={current+1} total={3} />
+      <ProgressBar current={current+1} total={words.length} />
       {isFinished
         ? <TrainResultSlide mode={mode} correctList={correctList} wrongList={wrongList} length={words.length} />
-        : <Slide/>}
+        : <Slide />}
     </div>
   );
 }

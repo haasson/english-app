@@ -17,7 +17,7 @@ export const WritingSlide = ({word, clickNext}) => {
     } else {
       return (
         <form className="text-center" onSubmit={checkWord}>
-          <Input className="mb-3" name="writing" />
+          <Input className="mb-3 text-center" name="writing" />
           <Button>Check</Button>
         </form>
       )

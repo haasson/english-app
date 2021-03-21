@@ -21,6 +21,7 @@ export const Input = ({placeholder, name, disabled, cleanup, className}) => {
     return (
         <input
             type="text"
+            autoComplete="off"
             className={`${className} form-control`}
             name={name} placeholder={placeholder}
             value={value}

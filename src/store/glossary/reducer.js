@@ -1,7 +1,5 @@
-import {act} from "@testing-library/react";
-
 const initialState = {
-  glossary: [],
+  glossary: {},
   search: '',
   filter: 'progress',
   addTranslationStatus: 'success',
@@ -28,7 +26,10 @@ const glossaryReducer = (state = initialState, action) => {
       return {...state, filter: action.filter}
     case ("UPDATE_PROGRESS"):
       const updatedGlossary = {...state.glossary}
-      action.list.forEach(el => updatedGlossary[el.id].progress = el.progress)
+      action.list.forEach(el => {
+        updatedGlossary[el.id].progress = el.progress
+        updatedGlossary[el.id].lastTrains = el.lastTrains
+      })
       return {...state, glossary: updatedGlossary }
     default:
       return state

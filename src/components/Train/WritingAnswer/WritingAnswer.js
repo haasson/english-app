@@ -18,7 +18,7 @@ export const WritingAnswer = ({word, answer, clicked}) => {
   return (
     <div className="text-center">
       <div className="mb-4">
-        <p className={isCorrect && 'd-none'} style={answerStyles}>{answer}</p>
+        <p className={isCorrect ? 'd-none' : ''} style={answerStyles}>{answer}</p>
         <p style={wordStyles}>{word}</p>
       </div>
       <Button clicked={() => clicked(isCorrect)}>Next</Button>

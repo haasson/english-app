@@ -1,31 +1,33 @@
 import {useEffect} from "react";
-import { Redirect, Route, Switch } from 'react-router'
 import {useDispatch} from "react-redux";
+import firebase from "firebase";
+import {fetchGlossary, useFetchGlossary} from "./store/glossary/actions";
 
-import Glossary from './pages/glossary'
-import Train from './pages/train';
 import Navbar from './components/UI/Navbar/Navbar'
-import {TrainManager} from "./components/Train/TrainManager/TrainManager";
-
-import {fetchGlossary} from "./store/glossary/actions";
+import {AppRouter} from "./components/App/AppRouter";
+import {useAuthentication} from "./hooks/app/useAuthentication";
+import {useList, useListKeys, useListVals, useObject} from "react-firebase-hooks/database";
 
 
 function App() {
   const dispatch = useDispatch()
+  const [user, loading] = useAuthentication()
 
   useEffect(() => {
     dispatch(fetchGlossary())
-  }, [dispatch])
+  }, [dispatch, user])
+
+  // useFetchGlossary()
+
+
+  if (loading) {
+    return <div>App loading..........</div>
+  }
 
   return (
     <div className="App">
       <Navbar />
-      <Switch>
-        <Route path="/train/:mode" component={TrainManager} />
-        <Route path="/train" exact component={Train} />,;L
-        <Route path="/" exact component={Glossary} />
-        <Redirect from="/" to="/glossary" />
-      </Switch>
+      <AppRouter />
     </div>
   );
 }

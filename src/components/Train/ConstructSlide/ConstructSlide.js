@@ -1,34 +1,43 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect, useMemo, useRef} from 'react';
 import {Button} from "../../UI/Button/Button";
 import {ConstructWord} from "../ConstructWord/ConstructWord";
 import {ConstructLetters} from "../ConstructLetters/ConstructLetters";
 
 export const ConstructSlide = ({word, clickNext}) => {
-  const createLetters = () => word.eng.toLowerCase().split('').map((letter, i) => (
-    {id:i, symbol: letter, isOpen: false})
-  )
-
-  const [letters, setLetters] = useState(createLetters());
   const [currentIdx, setCurrentIdx] = useState(0);
   const [isCorrect, setIsCorrect] = useState(true);
+  const currentRef = useRef(0);
 
-  const checkLetter = (id) => {
-    let letter = letters.find(letter => letter.id === id)
-    let updatedLetters = [...letters]
+  useEffect(() => {
+    document.addEventListener("keypress", onKeyPress)
+    return () => {
+      document.removeEventListener("keypress", onKeyPress)
+    }
+  }, [])
 
-    if (letter.symbol === letters[currentIdx].symbol) {
+  const letters = useMemo(() => {
+    return word.eng.toLowerCase().split('').map((letter, i) => ({id:i, symbol: letter}))
+  }, [word]);
+
+  const checkLetter = (isCorrectLetter) => {
+    if (isCorrectLetter) {
       setCurrentIdx(prev => prev + 1)
-      updatedLetters[currentIdx].isOpen = true
+      currentRef.current++
     } else {
-      updatedLetters[id].isMistake = true
       setIsCorrect(false)
     }
-    setLetters(updatedLetters)
+  }
+
+  const onKeyPress = (e) => {
+    if (currentRef.current < letters.length) {
+      const isCorrectLetter = e.key === letters[currentRef.current].symbol
+      checkLetter(isCorrectLetter)
+    }
   }
 
   return (
     <div className="row justify-content-center">
-      <div className="col-sm-6">
+      <div className="col-sm-8">
         <div className="card mb-3 mt-5">
           <div className="card-body text-center">
             <h3 className="mb-4">{word.rus}</h3>
@@ -37,8 +46,8 @@ export const ConstructSlide = ({word, clickNext}) => {
               <ConstructWord letters={letters} current={currentIdx}/>
             </div>
             <hr/>
-            <div className="d-flex justify-content-center mb-4">
-              <ConstructLetters letters={letters} clicked={checkLetter} />
+            <div className={`justify-content-center mb-4 ${currentIdx === letters.length ? 'd-none' : 'd-flex'}`}>
+              <ConstructLetters letters={letters} current={currentIdx} clicked={checkLetter} />
             </div>
             {currentIdx === letters.length && <Button clicked={() => clickNext(isCorrect)}>Next</Button>}
           </div>
